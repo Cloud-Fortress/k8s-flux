@@ -22,17 +22,17 @@ endif
 .PHONY: check-virtualization-software
 check-virtualization-software:
 ifeq ($(shell uname -s),MINGW64_NT-10.0)
-	ifeq ($(shell which virtualbox),)
-		@echo "VirtualBox is not installed"
-		@echo "Install VirtualBox from https://www.virtualbox.org/wiki/Downloads"
-		@exit 1
-	endif
+	@if [ ! -x "$$(which virtualbox)" ]; then \
+		echo "VirtualBox is not installed"; \
+		echo "Install VirtualBox from https://www.virtualbox.org/wiki/Downloads"; \
+		exit 1; \
+	fi;
 else ifeq ($(shell uname -s),Darwin)
-	ifeq ($(wildcard /Applications/Parallels\ Desktop.app),)
-		@echo "Parallels Desktop is not installed"
-		@echo "Install Parallels Desktop from https://www.parallels.com/products/desktop/"
-		@exit 1
-	endif
+	@if [ ! -d "/Applications/Parallels Desktop.app" ]; then \
+		echo "Parallels Desktop is not installed"; \
+		echo "Install Parallels Desktop from https://www.parallels.com/products/desktop/"; \
+		exit 1; \
+	fi;
 else
 	ifeq ($(shell which qemu-kvm),)
 		@echo "QEMU/KVM is not installed"
