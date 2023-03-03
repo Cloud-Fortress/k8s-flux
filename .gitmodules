@@ -1,0 +1,18 @@
+[submodule "charts/cilium"]
+	path = charts/cilium
+	url = https://github.com/cilium/charts.git
+[submodule "charts/cert-manager-webhook-ns1"]
+	path = charts/cert-manager-webhook-ns1
+	url = https://github.com/ns1/cert-manager-webhook-ns1.git
+[submodule "charts/cert-manager"]
+	path = charts/cert-manager
+	url = https://github.com/cert-manager/cert-manager.git
+[submodule "charts/kube-prometheus"]
+	path = charts/kube-prometheus
+	url = https://github.com/prometheus-operator/kube-prometheus.git
+[submodule "charts/dexidp"]
+	path = charts/dexidp
+	url = https://github.com/dexidp/helm-charts
+[submodule "ansible"]
+	path = ansible
+	url = git@github.com:Cloud-Fortress/k8s-ansible.git

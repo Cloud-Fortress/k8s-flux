@@ -58,6 +58,8 @@ start-staging-environment: check-project-root check-vagrant check-virtualization
 	vagrant up worker
 	vagrant ssh worker -c "exit"
 	vagrant up control-plane
+	vagrant ssh nas -c "/vagrant/.kube-join-command.sh"
+	vagrant ssh worker -c "/vagrant/.kube-join-command.sh"
 
 # Stop and destroy all running boxes
 .PHONY: destroy-all-boxes
