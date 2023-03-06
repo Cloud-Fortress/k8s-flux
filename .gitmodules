@@ -1,3 +1,6 @@
+[submodule "ansible"]
+	path = ansible
+	url = git@github.com:Cloud-Fortress/k8s-ansible.git
 [submodule "charts/cilium"]
 	path = charts/cilium
 	url = https://github.com/cilium/charts.git
@@ -13,6 +16,3 @@
 [submodule "charts/dexidp"]
 	path = charts/dexidp
 	url = https://github.com/dexidp/helm-charts
-[submodule "ansible"]
-	path = ansible
-	url = git@github.com:Cloud-Fortress/k8s-ansible.git

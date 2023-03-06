@@ -14,7 +14,7 @@ endif
 check-vagrant:
 ifeq ($(shell which vagrant),)
 	@echo "Vagrant is not installed"
-	@echo "Install Vagrant from https://www.vagrantup.com/downloads.html"
+	@echo "  Install Vagrant from https://www.vagrantup.com/downloads.html"
 	@exit 1
 endif
 
@@ -24,19 +24,19 @@ check-virtualization-software:
 ifeq ($(shell uname -s),MINGW64_NT-10.0)
 	@if [ ! -x "$$(which virtualbox)" ]; then \
 		echo "VirtualBox is not installed"; \
-		echo "Install VirtualBox from https://www.virtualbox.org/wiki/Downloads"; \
+		echo "  Install VirtualBox from https://www.virtualbox.org/wiki/Downloads"; \
 		exit 1; \
 	fi;
 else ifeq ($(shell uname -s),Darwin)
 	@if [ ! -d "/Applications/Parallels Desktop.app" ]; then \
 		echo "Parallels Desktop is not installed"; \
-		echo "Install Parallels Desktop from https://www.parallels.com/products/desktop/"; \
+		echo "  Install Parallels Desktop from https://www.parallels.com/products/desktop/"; \
 		exit 1; \
 	fi;
 else
 	ifeq ($(shell which qemu-kvm),)
 		@echo "QEMU/KVM is not installed"
-		@echo "Install QEMU/KVM from your package manager"
+		@echo "  Install QEMU/KVM from your package manager"
 		@exit 1
 	endif
 endif
@@ -46,20 +46,24 @@ endif
 check-no-boxes-running:
 ifneq ($(shell vagrant status | grep "running"),)
 	@echo "One or more boxes are already running"
-	@echo "Run 'make destroy-all-boxes' to destroy all boxes"
+	@echo "  Run 'make destroy-all-boxes' to destroy all boxes"
 	@exit 1
 endif
 
 # Start the vagrant staging environment
 .PHONY: start-staging-environment
 start-staging-environment: check-project-root check-vagrant check-virtualization-software check-no-boxes-running
-	vagrant up nas
-	vagrant ssh nas -c "exit"
-	vagrant up worker
-	vagrant ssh worker -c "exit"
-	vagrant up control-plane
-	vagrant ssh nas -c "/vagrant/.kube-join-command.sh"
-	vagrant ssh worker -c "/vagrant/.kube-join-command.sh"
+	@export ANSIBLE_ROLES_PATH=./ansible/roles
+	@vagrant up nas.local
+	@vagrant ssh nas.local -c "exit"
+	@vagrant up worker.local
+	@vagrant ssh worker.local -c "exit"
+	@vagrant up control-plane.local
+	# TODO move this into the vm
+	@export KUBECONFIG=./admin.conf
+	@helm install cilium ./charts/cilium/cilium-1.13.0.tgz --namespace kube-system --set kubeProxyReplacement=strict --set k8sServiceHost=control-plane.local --set k8sServicePort=6443
+	@vagrant ssh nas.local -c "/vagrant/.kube-join-command.sh"
+	@vagrant ssh worker.local -c "/vagrant/.kube-join-command.sh"
 
 # Stop and destroy all running boxes
 .PHONY: destroy-all-boxes
