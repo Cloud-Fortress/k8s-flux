@@ -60,8 +60,8 @@ Vagrant.configure("2") do |config|
     node.vm.provision "shell", inline: <<-SHELL
       sudo kubeadm init --pod-network-cidr=10.244.0.0/16
       mkdir -p /home/vagrant/.kube
-      sudo cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
-      sudo cp -i /etc/kubernetes/admin.conf /vagrant/admin.conf
+      sudo cp -f /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+      sudo cp -f /etc/kubernetes/admin.conf /vagrant/admin.conf
       sudo chown $(id -u vagrant):$(id -g vagrant) /home/vagrant/.kube/config
       kubeadm token create --print-join-command > /vagrant/.kube-join-command.sh
       chmod +x /vagrant/.kube-join-command.sh
